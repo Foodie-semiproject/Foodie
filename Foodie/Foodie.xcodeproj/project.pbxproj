@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		10DEA5B42D11125500E383BD /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 10DEA5B32D11125500E383BD /* SnapKit */; };
+		10DEA5B62D11125500E383BD /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 10DEA5B52D11125500E383BD /* SnapKit-Dynamic */; };
+		10DEA5B92D1112FD00E383BD /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 10DEA5B82D1112FD00E383BD /* GoogleGenerativeAI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		10DEA5842D10298D00E383BD /* Foodie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Foodie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +42,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				10DEA5B92D1112FD00E383BD /* GoogleGenerativeAI in Frameworks */,
+				10DEA5B42D11125500E383BD /* SnapKit in Frameworks */,
+				10DEA5B62D11125500E383BD /* SnapKit-Dynamic in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +87,9 @@
 			);
 			name = Foodie;
 			packageProductDependencies = (
+				10DEA5B32D11125500E383BD /* SnapKit */,
+				10DEA5B52D11125500E383BD /* SnapKit-Dynamic */,
+				10DEA5B82D1112FD00E383BD /* GoogleGenerativeAI */,
 			);
 			productName = Foodie;
 			productReference = 10DEA5842D10298D00E383BD /* Foodie.app */;
@@ -107,6 +119,10 @@
 			);
 			mainGroup = 10DEA57B2D10298D00E383BD;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				10DEA5B22D11125500E383BD /* XCRemoteSwiftPackageReference "SnapKit" */,
+				10DEA5B72D1112FD00E383BD /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 10DEA5852D10298D00E383BD /* Products */;
 			projectDirPath = "";
@@ -343,6 +359,43 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		10DEA5B22D11125500E383BD /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+		10DEA5B72D1112FD00E383BD /* XCRemoteSwiftPackageReference "generative-ai-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google-gemini/generative-ai-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		10DEA5B32D11125500E383BD /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 10DEA5B22D11125500E383BD /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		10DEA5B52D11125500E383BD /* SnapKit-Dynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 10DEA5B22D11125500E383BD /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = "SnapKit-Dynamic";
+		};
+		10DEA5B82D1112FD00E383BD /* GoogleGenerativeAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 10DEA5B72D1112FD00E383BD /* XCRemoteSwiftPackageReference "generative-ai-swift" */;
+			productName = GoogleGenerativeAI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 10DEA57C2D10298D00E383BD /* Project object */;
 }
