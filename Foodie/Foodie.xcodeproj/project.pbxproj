@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		10DEA5B42D11125500E383BD /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 10DEA5B32D11125500E383BD /* SnapKit */; };
-		10DEA5B62D11125500E383BD /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 10DEA5B52D11125500E383BD /* SnapKit-Dynamic */; };
 		10DEA5B92D1112FD00E383BD /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 10DEA5B82D1112FD00E383BD /* GoogleGenerativeAI */; };
 /* End PBXBuildFile section */
 
@@ -44,7 +43,6 @@
 			files = (
 				10DEA5B92D1112FD00E383BD /* GoogleGenerativeAI in Frameworks */,
 				10DEA5B42D11125500E383BD /* SnapKit in Frameworks */,
-				10DEA5B62D11125500E383BD /* SnapKit-Dynamic in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,7 +86,6 @@
 			name = Foodie;
 			packageProductDependencies = (
 				10DEA5B32D11125500E383BD /* SnapKit */,
-				10DEA5B52D11125500E383BD /* SnapKit-Dynamic */,
 				10DEA5B82D1112FD00E383BD /* GoogleGenerativeAI */,
 			);
 			productName = Foodie;
@@ -161,6 +158,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CZ4858BW64;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Foodie/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -193,6 +191,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CZ4858BW64;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Foodie/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -384,11 +383,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 10DEA5B22D11125500E383BD /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
-		};
-		10DEA5B52D11125500E383BD /* SnapKit-Dynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 10DEA5B22D11125500E383BD /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = "SnapKit-Dynamic";
 		};
 		10DEA5B82D1112FD00E383BD /* GoogleGenerativeAI */ = {
 			isa = XCSwiftPackageProductDependency;
