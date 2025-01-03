@@ -15,6 +15,7 @@ import GoogleGenerativeAI
 final class ViewController: UIViewController {
     
     private let homeView = HomeView()
+    private let settingLocationView = SettingLocationView()
     
 //    let analyzer = ImageAnalyzer()
 //    let interaction = ImageAnalysisInteraction()
@@ -26,6 +27,8 @@ final class ViewController: UIViewController {
 //            analyzeCurrentImage()
 //        }
 //    }
+    
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,9 +40,11 @@ final class ViewController: UIViewController {
     }
     
     private func setupView() {
-        self.view.addSubview(homeView)
-        homeView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        self.view.addSubview(settingLocationView)
+        settingLocationView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(self.view.safeAreaLayoutGuide)
+            make.height.equalTo(60)
         }
         
         self.homeView.cameraButton.addTarget(self, action: #selector(cameraButtonTapped), for: .touchUpInside)
