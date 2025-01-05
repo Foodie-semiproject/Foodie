@@ -11,10 +11,14 @@ import AVFoundation
 import VisionKit
 import Vision
 import GoogleGenerativeAI
+import CoreLocation
 
 final class ViewController: UIViewController {
     
     private let homeView = HomeView()
+    private let settingLocationView = SettingLocationView()
+    
+    private lazy var locationManager = CLLocationManager()
     
 //    let analyzer = ImageAnalyzer()
 //    let interaction = ImageAnalysisInteraction()
@@ -26,6 +30,8 @@ final class ViewController: UIViewController {
 //            analyzeCurrentImage()
 //        }
 //    }
+    
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,12 +40,18 @@ final class ViewController: UIViewController {
         self.setupNavigationBar()
 //        print(ImageAnalyzer.isSupported) // 장치가 Live Text를 지원하는지 확인
         
+        // 위치 권한 설정
+        locationManager.delegate = self
+        didChangeAuthorization()
+        
     }
     
     private func setupView() {
-        self.view.addSubview(homeView)
-        homeView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        self.view.addSubview(settingLocationView)
+        settingLocationView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(self.view.safeAreaLayoutGuide)
+            make.height.equalTo(60)
         }
         
         self.homeView.cameraButton.addTarget(self, action: #selector(cameraButtonTapped), for: .touchUpInside)
@@ -50,6 +62,76 @@ final class ViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "square.and.pencil"), style: .plain, target: self, action: nil)
         self.navigationItem.title = "맛잘알"
         self.navigationController?.navigationBar.tintColor = .black
+    }
+    
+    private func didChangeAuthorization() {
+        switch self.locationManager.authorizationStatus {
+        case .notDetermined:
+            self.locationManager.requestWhenInUseAuthorization()
+        case .restricted, .denied:
+            print()
+        case .authorizedWhenInUse, .authorizedAlways:
+            self.locationManager.startUpdatingLocation()
+        default:
+            break
+        }
+    }
+    
+    private func getAddress() {
+//        locationManager.distanceFilter = kCLDistanceFilterNone
+//        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+//        locationManager.requestWhenInUseAuthorization()
+//        locationManager.startUpdatingLocation()
+        
+        let geocoder = CLGeocoder.init()
+        
+        let location = self.locationManager.location
+        
+        if location != nil {
+            geocoder.reverseGeocodeLocation(location!) { placemarks, error in
+                if error != nil {
+                    print(error!)
+                    return
+                }
+                
+                if let placemark = placemarks?.first {
+                    var address: [String] = []
+                    
+                    if let administrativeArea = placemark.administrativeArea {
+                        print("== [시/도] administrativeArea : \(administrativeArea)")  //서울특별시, 경기도
+                        address.append(administrativeArea)
+                    }
+                    
+                    if let locality = placemark.locality {
+                        print("== [도시] locality : \(locality)") //서울특별시, 성남시, 수원시
+                        address.append(locality)
+                    }
+                    
+                    if let subLocality = placemark.subLocality {
+                        print("== [추가 도시] subLocality : \(subLocality)") // 잠실동
+                        address.append(subLocality)
+                    }
+                    
+                    if let thoroughfare = placemark.thoroughfare {
+                        print("== [상세주소] thoroughfare : \(thoroughfare)") // 올림픽로
+                        address.append(thoroughfare)
+                    }
+                    
+                    if let subThoroughfare = placemark.subThoroughfare {
+                        print("== [추가 거리 정보] subThoroughfare : \(subThoroughfare)") // 272-13
+                        address.append(subThoroughfare)
+                    }
+                    let addressString = address.reduce(into: " ") { result, element in
+                        if !result.contains(element) {
+                            result += " \(element)"
+                        }
+                    }
+                    self.settingLocationView.settingLocationLabel.text = addressString
+                    print("CLLocationManagerDelegate >> getAddress() - address : \(address)")  // 서울특별시 광진구 중곡동 272-13
+                }
+            }
+        }
+        
     }
 
 
@@ -140,5 +222,16 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         self.dismiss(animated: false)
+    }
+}
+
+extension ViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        getAddress()
+        locationManager.stopUpdatingLocation()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        locationManager.startUpdatingLocation()
     }
 }
