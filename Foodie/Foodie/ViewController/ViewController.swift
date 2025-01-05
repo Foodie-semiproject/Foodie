@@ -31,6 +31,15 @@ final class ViewController: UIViewController {
 //        }
 //    }
     
+    private let cameraButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "camera.fill"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.layer.cornerRadius = 90 / 2
+        button.backgroundColor = .lightGray
+        button.tintColor = .black
+        return button
+    }()
     
 
     override func viewDidLoad() {
@@ -48,13 +57,22 @@ final class ViewController: UIViewController {
     
     private func setupView() {
         self.view.addSubview(settingLocationView)
+        self.view.addSubview(cameraButton)
+        
         settingLocationView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(self.view.safeAreaLayoutGuide)
             make.height.equalTo(60)
         }
         
+        cameraButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(self.view.safeAreaLayoutGuide).offset(-50)
+            make.height.width.equalTo(90)
+        }
+        
         self.homeView.cameraButton.addTarget(self, action: #selector(cameraButtonTapped), for: .touchUpInside)
+        self.cameraButton.addTarget(self, action: #selector(cameraButtonTapped), for: .touchUpInside)
     }
     
     private func setupNavigationBar() {
