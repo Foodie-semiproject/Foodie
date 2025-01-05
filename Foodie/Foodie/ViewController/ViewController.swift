@@ -20,6 +20,19 @@ final class ViewController: UIViewController {
     
     private lazy var locationManager = CLLocationManager()
     
+    private let resentSearchLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .black
+        label.font = .boldSystemFont(ofSize: 18)
+        label.text = "최근 검색 기록"
+        return label
+    }()
+    
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout())
+        return collectionView
+    }()
+    
 //    let analyzer = ImageAnalyzer()
 //    let interaction = ImageAnalysisInteraction()
     
@@ -57,6 +70,8 @@ final class ViewController: UIViewController {
     
     private func setupView() {
         self.view.addSubview(settingLocationView)
+        self.view.addSubview(resentSearchLabel)
+        self.view.addSubview(collectionView)
         self.view.addSubview(cameraButton)
         
         settingLocationView.snp.makeConstraints { make in
@@ -64,6 +79,23 @@ final class ViewController: UIViewController {
             make.top.equalTo(self.view.safeAreaLayoutGuide)
             make.height.equalTo(60)
         }
+        resentSearchLabel.snp.makeConstraints { make in
+            make.top.equalTo(settingLocationView.snp.bottom).offset(8)
+            make.left.right.equalToSuperview().offset(16)
+            make.height.equalTo(20)
+        }
+        
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(resentSearchLabel.snp.bottom).offset(16)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(300)
+        }
+        
+        collectionView.register(ResentSearchCell.self, forCellWithReuseIdentifier: ResentSearchCell.identifier)
+        collectionView.alwaysBounceVertical = false
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        
         
         cameraButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -150,6 +182,19 @@ final class ViewController: UIViewController {
             }
         }
         
+    }
+    
+    private func collectionViewLayout() -> UICollectionViewCompositionalLayout {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(300), heightDimension: .absolute(300))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(300), heightDimension: .absolute(300))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = CGFloat(10)
+        section.orthogonalScrollingBehavior = .continuous
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
+        let layout = UICollectionViewCompositionalLayout(section: section)
+        return layout
     }
 
 
@@ -257,4 +302,17 @@ extension ViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         locationManager.startUpdatingLocation()
     }
+}
+
+extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 6
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ResentSearchCell.identifier, for: indexPath) as! ResentSearchCell
+        return cell
+    }
+    
+    
 }
