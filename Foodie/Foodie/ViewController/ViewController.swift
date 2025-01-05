@@ -235,6 +235,11 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
         self.visionRequest(image: image)
         self.generateText(image: image)
         
+        // 사진 촬영 후 식당 데이터가 있으면
+//        let resultViewController = ResultViewController()
+//        self.navigationController?.pushViewController(resultViewController, animated: true)
+        // 없으면 찾을 수 없습니다 알럿
+        
         self.dismiss(animated: false)
     }
     
