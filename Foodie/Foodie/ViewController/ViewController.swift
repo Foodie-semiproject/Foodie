@@ -31,6 +31,7 @@ final class ViewController: UIViewController {
         super.viewDidLoad()
         
         self.setupView()
+        self.setupNavigationBar()
 //        print(ImageAnalyzer.isSupported) // 장치가 Live Text를 지원하는지 확인
         
     }
@@ -42,6 +43,13 @@ final class ViewController: UIViewController {
         }
         
         self.homeView.cameraButton.addTarget(self, action: #selector(cameraButtonTapped), for: .touchUpInside)
+    }
+    
+    private func setupNavigationBar() {
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "gearshape"), style: .plain, target: self, action: nil)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "square.and.pencil"), style: .plain, target: self, action: nil)
+        self.navigationItem.title = "맛잘알"
+        self.navigationController?.navigationBar.tintColor = .black
     }
 
 
