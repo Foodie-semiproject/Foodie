@@ -22,7 +22,7 @@ final class SettingLocationView: UIView {
         return imageView
     }()
     
-    private let settingLocationLabel: UILabel = {
+    var settingLocationLabel: UILabel = {
         let label = UILabel()
         label.text = "위치 권한을 설정해주세요."
         label.font = .systemFont(ofSize: 14, weight: .medium)
