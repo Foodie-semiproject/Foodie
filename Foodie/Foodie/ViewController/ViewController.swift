@@ -284,6 +284,11 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
 //        let resultViewController = ResultViewController()
 //        self.navigationController?.pushViewController(resultViewController, animated: true)
         // 없으면 찾을 수 없습니다 알럿
+//        let viewController = CustomAlertViewController(title: "식당을 찾을 수 없습니다.", greenColorButtonTitle: "취소", grayColorButtonTitle: "다시 촬영하기", customAlertType: .doneAndCancel, alertHeight: 200)
+//        viewController.delegate = self
+//        viewController.modalTransitionStyle = .crossDissolve
+//        viewController.modalPresentationStyle = .overFullScreen
+//        self.present(viewController, animated: false)
         
         self.dismiss(animated: false)
     }
@@ -315,4 +320,14 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     
+}
+
+extension ViewController: CustomAlertDelegate {
+    func action() {
+        
+    }
+    
+    func exit() {
+        
+    }
 }
