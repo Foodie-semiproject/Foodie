@@ -16,6 +16,7 @@ import CoreLocation
 final class ViewController: UIViewController {
     
     private let homeView = HomeView()
+    private var restaurantName: String = ""
     private let settingLocationView = SettingLocationView()
     
     private lazy var locationManager = CLLocationManager()
@@ -51,6 +52,9 @@ final class ViewController: UIViewController {
         button.layer.cornerRadius = 90 / 2
         button.backgroundColor = .lightGray
         button.tintColor = .black
+        button.layer.shadowColor = UIColor.lightGray.cgColor
+        button.layer.shadowOpacity = 0.5
+        button.layer.shadowOffset = .zero
         return button
     }()
     
@@ -204,6 +208,8 @@ final class ViewController: UIViewController {
         picker.allowsEditing = true
         picker.delegate = self
         self.present(picker, animated: false)
+//        let resultViewController = ResultViewController()
+//        self.navigationController?.pushViewController(resultViewController, animated: true)
     }
     
 //    func analyzeCurrentImage() {
@@ -254,19 +260,30 @@ final class ViewController: UIViewController {
     }
     
     // MARK: Gemini를 이용한 OCR
-    func generateText(image: UIImage) {
-        Task {
-            let model = GenerativeModel(name: "gemini-1.5-flash-latest", apiKey: APIKey.default)
-            
-            let prompt = "이미지에서 제일 크게 보이는 텍스트만 추출해주고, 따로 덧붙이는 말은 하지마."
-            
-            let response = try await model.generateContent(prompt, image)
-            if let text = response.text {
-                print("Gemini OCR - \(text)")
-                DispatchQueue.main.async {
-                    self.homeView.infoLabel.text = "상호명 : \(text)"
-                }
+    func generateText(image: UIImage) async throws -> String {
+        let model = GenerativeModel(name: "gemini-1.5-flash-latest", apiKey: APIKey.default)
+        
+        let prompt = """
+                    너는 사진을 보고 사진에 있는 식당 이름을 추출할 수 있는 지능적인 AI야.
+                    
+                    사진을 보고 간판에 있는 식당 이름을 추출해줘. 사진에 있는 글씨들 중에서
+                    가장 큰 것을 찾으면 돼.
+                    
+                    1. 영어로 되어있다면 한글로 읽어줘.
+                    2. 너의 답변에는 식당 이름 외에 다른 어떤 것도 포함시키지 말아줘.
+                    3. 식당이름을 찾지 못하겠다면 '인식불가'라고 답변해줘.
+                    """
+        
+        let response = try await model.generateContent(prompt, image)
+        if let text = response.text {
+            print("Gemini OCR - \(text)")
+            DispatchQueue.main.async {
+                //                    self.homeView.infoLabel.text = "상호명 : \(text)"
+                self.restaurantName = text
             }
+            return text
+        } else {
+            throw NSError(domain: "OCRError", code: -1, userInfo: [NSLocalizedDescriptionKey: "텍스트를 추출할 수 없습니다."])
         }
     }
 }
@@ -274,23 +291,53 @@ final class ViewController: UIViewController {
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
-        self.homeView.imageView.image = image
-        
         guard let image else { return }
-        self.visionRequest(image: image)
-        self.generateText(image: image)
+//        self.generateText(image: image)
+//        self.visionRequest(image: image)
         
-        // 사진 촬영 후 식당 데이터가 있으면
-//        let resultViewController = ResultViewController()
-//        self.navigationController?.pushViewController(resultViewController, animated: true)
-        // 없으면 찾을 수 없습니다 알럿
-//        let viewController = CustomAlertViewController(title: "식당을 찾을 수 없습니다.", greenColorButtonTitle: "취소", grayColorButtonTitle: "다시 촬영하기", customAlertType: .doneAndCancel, alertHeight: 200)
-//        viewController.delegate = self
-//        viewController.modalTransitionStyle = .crossDissolve
-//        viewController.modalPresentationStyle = .overFullScreen
-//        self.present(viewController, animated: false)
+        Task {
+            do {
+                let extractedText = try await generateText(image: image)
+                self.dismiss(animated: false) {
+                    print(extractedText)
+                    if extractedText == "인식불가" {
+                        // MARK: 없으면 찾을 수 없습니다 알럿
+                        let viewController = CustomAlertViewController(title: "식당을 찾을 수 없습니다.", greenColorButtonTitle: "취소", grayColorButtonTitle: "다시 촬영하기", customAlertType: .doneAndCancel, alertHeight: 200)
+                        viewController.delegate = self
+                        viewController.modalTransitionStyle = .crossDissolve
+                        viewController.modalPresentationStyle = .overFullScreen
+                        self.present(viewController, animated: false)
+                    } else {
+                        // MARK: 사진 촬영 후 식당 데이터가 있으면
+                        let resultViewController = ResultViewController()
+                        resultViewController.image = image
+                        resultViewController.restaurantName = extractedText
+                        self.navigationController?.pushViewController(resultViewController, animated: true)
+                    }
+                }
+            } catch {
+                print("에러 발생: \(error.localizedDescription)")
+                self.dismiss(animated: false)
+            }
+        }
         
-        self.dismiss(animated: false)
+//        self.dismiss(animated: false) {
+//            
+//            if self.restaurantName != "" {
+//                // MARK: 사진 촬영 후 식당 데이터가 있으면
+//                let resultViewController = ResultViewController()
+//                resultViewController.image = image
+//                resultViewController.restaurantName = self.restaurantName
+//                self.navigationController?.pushViewController(resultViewController, animated: true)
+//            } else {
+//                // MARK: 없으면 찾을 수 없습니다 알럿
+//                let viewController = CustomAlertViewController(title: "식당을 찾을 수 없습니다.", greenColorButtonTitle: "취소", grayColorButtonTitle: "다시 촬영하기", customAlertType: .doneAndCancel, alertHeight: 200)
+//                viewController.delegate = self
+//                viewController.modalTransitionStyle = .crossDissolve
+//                viewController.modalPresentationStyle = .overFullScreen
+//                self.present(viewController, animated: false)
+//            }
+//        }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
