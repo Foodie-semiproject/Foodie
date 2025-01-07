@@ -56,6 +56,12 @@ final class ResultViewController: UIViewController {
                 self.indicatorView.stopAnimating()
                 self.resultView.configure(image: self.image, title: restaurantInfo.name, subTitle: restaurantInfo.type, location: restaurantInfo.address, openTime: restaurantInfo.open_time, phone: restaurantInfo.phone_num, homepage: restaurantInfo.homepage, description: restaurantInfo.description, summaryReview: restaurantInfo.summary_reviews_en, reviewList: restaurantInfo.reviews)
             }
+            
+            if RestaurantStorage.shared.addRestaurant(restaurantInfo) {
+                print("레스토랑이 성공적으로 저장되었습니다.")
+            } else {
+                print("이미 존재하는 레스토랑입니다.")
+            }
         }
     }
     

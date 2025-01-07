@@ -17,6 +17,7 @@ final class ViewController: UIViewController {
     
     private let homeView = HomeView()
     private var restaurantName: String = ""
+    private var restaurants: [Restaurant] = []
     private let settingLocationView = SettingLocationView()
     
     private lazy var locationManager = CLLocationManager()
@@ -25,7 +26,7 @@ final class ViewController: UIViewController {
         let label = UILabel()
         label.textColor = .black
         label.font = .boldSystemFont(ofSize: 18)
-        label.text = "최근 검색 기록"
+        label.text = "Recent search history"
         return label
     }()
     
@@ -70,6 +71,16 @@ final class ViewController: UIViewController {
         locationManager.delegate = self
         didChangeAuthorization()
         
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // 최근 검색 기록 조회
+        self.restaurants = RestaurantStorage.shared.getRestaurants()
+        print(restaurants)
+        collectionView.reloadData()
     }
     
     private func setupView() {
@@ -358,11 +369,13 @@ extension ViewController: CLLocationManagerDelegate {
 
 extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 6
+        return restaurants.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ResentSearchCell.identifier, for: indexPath) as! ResentSearchCell
+        let restaurant = restaurants[indexPath.row]
+        cell.configure(title: restaurant.name, subTitle: restaurant.type, location: restaurant.address, openTime: restaurant.open_time, phone: restaurant.phone_num, homepage: restaurant.homepage, summaryReview: restaurant.summary_reviews_en)
         return cell
     }
     
