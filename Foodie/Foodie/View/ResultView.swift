@@ -45,6 +45,7 @@ final class ResultView: UIView {
     private let locationImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "mappin.and.ellipse")
+        imageView.tintColor = .black
         return imageView
     }()
     
@@ -66,6 +67,7 @@ final class ResultView: UIView {
     private let openTimeImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "clock.fill")
+        imageView.tintColor = .black
         return imageView
     }()
     
@@ -87,6 +89,7 @@ final class ResultView: UIView {
     private let telephoneImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "phone.fill")
+        imageView.tintColor = .black
         return imageView
     }()
     
@@ -108,6 +111,7 @@ final class ResultView: UIView {
     private let homepageImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "network")
+        imageView.tintColor = .black
         return imageView
     }()
     
@@ -133,15 +137,15 @@ final class ResultView: UIView {
         return stackView
     }()
     
-    var descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .systemGray
-        label.numberOfLines = 0
-        label.lineBreakMode = .byCharWrapping
-        label.text = "국내외에서 이름을 드높이고 있는 강민구 셰프의 뉴코리안 레스토랑. 사찰음식과 한식 장인에게 전수받은 전통 한식 기법을 현대적으로 재해석한 한식을 맛볼 수 있다. 완벽을 지향하는 육수 내기 등 기본기를 중요시하고 있다. 실내 분위기도 모던하고 쾌적하며 서비스도 나무랄 데 없다. 2020년에 홍콩에 오픈한 한식당 한식구가 큰 인기를 끄는 등 글로벌 셰프로서의 위엄을 보여준다."
-        return label
-    }()
+//    var descriptionLabel: UILabel = {
+//        let label = UILabel()
+//        label.font = .systemFont(ofSize: 14, weight: .medium)
+//        label.textColor = .systemGray
+//        label.numberOfLines = 0
+//        label.lineBreakMode = .byCharWrapping
+//        label.text = "국내외에서 이름을 드높이고 있는 강민구 셰프의 뉴코리안 레스토랑. 사찰음식과 한식 장인에게 전수받은 전통 한식 기법을 현대적으로 재해석한 한식을 맛볼 수 있다. 완벽을 지향하는 육수 내기 등 기본기를 중요시하고 있다. 실내 분위기도 모던하고 쾌적하며 서비스도 나무랄 데 없다. 2020년에 홍콩에 오픈한 한식당 한식구가 큰 인기를 끄는 등 글로벌 셰프로서의 위엄을 보여준다."
+//        return label
+//    }()
     
     private let seperatorView: UIView = {
         let view = UIView()
@@ -154,13 +158,14 @@ final class ResultView: UIView {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(ReviewCell.self, forCellReuseIdentifier: ReviewCell.identifier)
+        tableView.register(SummaryCell.self, forCellReuseIdentifier: SummaryCell.identifier)
         tableView.tableHeaderView = headerView
         tableView.sectionHeaderTopPadding = .zero
         return tableView
     }()
     
     lazy var headerView: UIView = {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: 520))
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: 400))
         view.backgroundColor = .white
         return view
     }()
@@ -173,7 +178,7 @@ final class ResultView: UIView {
         openTimeLabel.text = openTime
         telephoneLabel.text = phone
         homepageLabel.text = homepage
-        descriptionLabel.text = description
+//        descriptionLabel.text = description
     }
     
     override init(frame: CGRect) {
@@ -190,7 +195,7 @@ final class ResultView: UIView {
         headerView.addSubview(signboardImageView)
         headerView.addSubview(titleStackView)
         headerView.addSubview(descriptionStackView)
-        headerView.addSubview(descriptionLabel)
+//        headerView.addSubview(descriptionLabel)
         headerView.addSubview(seperatorView)
         
         
@@ -208,12 +213,12 @@ final class ResultView: UIView {
             make.top.equalTo(titleStackView.snp.bottom).offset(16)
             make.left.right.equalToSuperview().inset(16)
         }
-        descriptionLabel.snp.makeConstraints { make in
-            make.top.equalTo(descriptionStackView.snp.bottom).offset(16)
-            make.left.right.equalToSuperview().inset(16)
-        }
+//        descriptionLabel.snp.makeConstraints { make in
+//            make.top.equalTo(descriptionStackView.snp.bottom).offset(16)
+//            make.left.right.equalToSuperview().inset(16)
+//        }
         seperatorView.snp.makeConstraints { make in
-            make.top.equalTo(descriptionLabel.snp.bottom).offset(16)
+            make.top.equalTo(descriptionStackView.snp.bottom).offset(16)
             make.left.right.equalToSuperview().inset(16)
             make.height.equalTo(1)
         }
@@ -226,14 +231,32 @@ final class ResultView: UIView {
 }
 
 extension ResultView: UITableViewDelegate, UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 3
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return reviewList.count
+        if section == 2 {
+            return reviewList.count
+        }
+        return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ReviewCell.identifier, for: indexPath) as! ReviewCell
-        cell.configure(title: reviewList[indexPath.row])
-        return cell
+        if indexPath.section == 2 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: ReviewCell.identifier, for: indexPath) as! ReviewCell
+            cell.configure(title: reviewList[indexPath.row])
+            return cell
+        } else if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: SummaryCell.identifier, for: indexPath) as! SummaryCell
+            cell.configure(title: "국내외에서 이름을 드높이고 있는 강민구 셰프의 뉴코리안 레스토랑. 사찰음식과 한식 장인에게 전수받은 전통 한식 기법을 현대적으로 재해석한 한식을 맛볼 수 있다. 완벽을 지향하는 육수 내기 등 기본기를 중요시하고 있다. 실내 분위기도 모던하고 쾌적하며 서비스도 나무랄 데 없다. 2020년에 홍콩에 오픈한 한식당 한식구가 큰 인기를 끄는 등 글로벌 셰프로서의 위엄을 보여준다.", textColor: .systemGray, linebreakMode: .byCharWrapping)
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: SummaryCell.identifier, for: indexPath) as! SummaryCell
+            cell.configure(title: "The staff is friendly and the atmosphere is good. In particular, there are opinions that the friendly service of the owner, the taste of the food, and the taste of the alcohol are satisfying, so there is an intention to revisit.", textColor: .black)
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -241,20 +264,31 @@ extension ResultView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 24
+        if section == 0 {
+            return .zero
+        }
+        return 30
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
         headerView.backgroundColor = .white
         let sectionTitleLabel = UILabel()
-        sectionTitleLabel.text = "리뷰"
-        sectionTitleLabel.font = .systemFont(ofSize: 16, weight: .bold)
+//        sectionTitleLabel.text = "리뷰"
+        sectionTitleLabel.font = .systemFont(ofSize: 18, weight: .bold)
         sectionTitleLabel.textColor = .black
         headerView.addSubview(sectionTitleLabel)
         sectionTitleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
+            make.centerY.equalToSuperview().offset(4)
             make.left.right.equalToSuperview().inset(16)
+        }
+        
+        if section == 0 {
+            sectionTitleLabel.text = ""
+        } else if section == 1 {
+            sectionTitleLabel.text = "Review Summary"
+        } else {
+            sectionTitleLabel.text = "Reviews"
         }
         return headerView
     }
