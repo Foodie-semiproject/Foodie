@@ -79,7 +79,7 @@ final class ViewController: UIViewController {
         
         // 최근 검색 기록 조회
         self.restaurants = RestaurantStorage.shared.getRestaurants()
-        print(restaurants)
+//        print(restaurants)
         collectionView.reloadData()
     }
     
@@ -312,18 +312,21 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
                 self.dismiss(animated: false) {
                     print(extractedText)
                     if extractedText == "인식불가" {
-                        // MARK: 없으면 찾을 수 없습니다 알럿
                         let viewController = CustomAlertViewController(title: "식당을 찾을 수 없습니다.", greenColorButtonTitle: "취소", grayColorButtonTitle: "다시 촬영하기", customAlertType: .doneAndCancel, alertHeight: 200)
                         viewController.delegate = self
                         viewController.modalTransitionStyle = .crossDissolve
                         viewController.modalPresentationStyle = .overFullScreen
                         self.present(viewController, animated: false)
-                    } else {
-                        // MARK: 사진 촬영 후 식당 데이터가 있으면
-                        let resultViewController = ResultViewController()
-                        resultViewController.image = image
-                        resultViewController.restaurantName = extractedText
-                        self.navigationController?.pushViewController(resultViewController, animated: true)
+                    }
+                    Network.shared.searchRestaurants(query: extractedText) { result in
+                        if result {
+                            DispatchQueue.main.async {
+                                let resultViewController = ResultViewController()
+                                resultViewController.image = image
+                                resultViewController.restaurantName = extractedText
+                                self.navigationController?.pushViewController(resultViewController, animated: true)
+                            }
+                        }
                     }
                 }
             } catch {
@@ -331,24 +334,6 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
                 self.dismiss(animated: false)
             }
         }
-        
-//        self.dismiss(animated: false) {
-//            
-//            if self.restaurantName != "" {
-//                // MARK: 사진 촬영 후 식당 데이터가 있으면
-//                let resultViewController = ResultViewController()
-//                resultViewController.image = image
-//                resultViewController.restaurantName = self.restaurantName
-//                self.navigationController?.pushViewController(resultViewController, animated: true)
-//            } else {
-//                // MARK: 없으면 찾을 수 없습니다 알럿
-//                let viewController = CustomAlertViewController(title: "식당을 찾을 수 없습니다.", greenColorButtonTitle: "취소", grayColorButtonTitle: "다시 촬영하기", customAlertType: .doneAndCancel, alertHeight: 200)
-//                viewController.delegate = self
-//                viewController.modalTransitionStyle = .crossDissolve
-//                viewController.modalPresentationStyle = .overFullScreen
-//                self.present(viewController, animated: false)
-//            }
-//        }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

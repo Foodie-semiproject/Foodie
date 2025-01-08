@@ -44,6 +44,8 @@ final class ResultViewController: UIViewController {
             make.center.equalToSuperview()
         }
         self.view.bringSubviewToFront(indicatorView)
+        
+        self.resultView.titleLabel.text = restaurantName
     }
     
     private func networkRequest() {
@@ -54,7 +56,7 @@ final class ResultViewController: UIViewController {
             
             DispatchQueue.main.async {
                 self.indicatorView.stopAnimating()
-                self.resultView.configure(image: self.image, title: restaurantInfo.name, subTitle: restaurantInfo.type, location: restaurantInfo.address, openTime: restaurantInfo.open_time, phone: restaurantInfo.phone_num, homepage: restaurantInfo.homepage, description: restaurantInfo.description, summaryReview: restaurantInfo.summary_reviews_en, reviewList: restaurantInfo.reviews)
+                self.resultView.configure(image: self.image, title: restaurantInfo.name, subTitle: restaurantInfo.type, location: restaurantInfo.address, openTime: restaurantInfo.open_time, phone: restaurantInfo.phone_num, homepage: restaurantInfo.homepage, description: restaurantInfo.description, summaryReview: restaurantInfo.summary_reviews_en, reviewList: restaurantInfo.gemini_translation)
             }
             
             if RestaurantStorage.shared.addRestaurant(restaurantInfo) {

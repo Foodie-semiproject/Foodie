@@ -1,13 +1,13 @@
 //
-//  Restaurant.swift
+//  RestaurantList.swift
 //  Foodie
 //
-//  Created by heyji on 1/7/25.
+//  Created by heyji on 1/8/25.
 //
 
 import Foundation
 
-struct Restaurant: Codable {
+struct RestaurantList: Codable {
     let name: String
     let address: String
     let type: String
@@ -16,7 +16,7 @@ struct Restaurant: Codable {
     let phone_num: String
     let homepage: String
     let reviews: [String]
-    let summary_reviews_en: String
+    let summary_reviews: String
     let description: String
     let gemini_translation: [String]
 }
