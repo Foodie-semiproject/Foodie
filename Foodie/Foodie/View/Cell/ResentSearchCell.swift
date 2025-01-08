@@ -143,18 +143,30 @@ final class ResentSearchCell: UICollectionViewCell {
     private lazy var descriptionStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [locationStackView, openTimeStackView, telephoneStackView, homepageStackView])
         stackView.axis = .vertical
-        stackView.spacing = 12
+        stackView.spacing = 6
         stackView.alignment = .leading
         return stackView
     }()
     
-    var descriptionLabel: UILabel = {
+    private var seperatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemGray
+        return view
+    }()
+    
+    private var reviewView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
+    }()
+    
+    var summaryReviewLabel: UILabel = {
         let label = UILabel()
-        label.text = "국내외에서 이름을 드높이고 있는 강민구 셰프의 뉴코리안 레스토랑. 사찰음식과 한식 장인에게 전수받은 전통 한식 기법을 현대적으로 재해석한 한식을 맛볼 수 있다. 완벽을 지향하는 육수 내기 등 기본기를 중요시하고 있다. 실내 분위기도 모던하고 쾌적하며 서비스도 나무랄 데 없다. 2020년에 홍콩에 오픈한 한식당 한식구가 큰 인기를 끄는 등 글로벌 셰프로서의 위엄을 보여준다."
+        label.text = "The staff is friendly and the atmosphere is good. In particular, there are opinions that the friendly service of the owner, the taste of the food, and the taste of the alcohol are satisfying, so there is an intention to revisit. "
         label.font = .systemFont(ofSize: 14, weight: .medium)
         label.textColor = .black
         label.numberOfLines = 0
-        label.lineBreakMode = .byCharWrapping
+//        label.lineBreakMode = .byCharWrapping
         label.lineBreakStrategy = .hangulWordPriority
         return label
     }()
@@ -168,21 +180,23 @@ final class ResentSearchCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(title: String, subTitle: String, location: String, openTime: String, phone: String, homepage:String, description: String) {
+    func configure(title: String, subTitle: String, location: String, openTime: String, phone: String, homepage:String, summaryReview: String) {
         titleLabel.text = title
         subTitleLabel.text = subTitle
         locationLabel.text = location
         openTimeLabel.text = openTime
         telephoneLabel.text = phone
         homepageLabel.text = homepage
-        descriptionLabel.text = description
+        summaryReviewLabel.text = summaryReview
     }
     
     private func setupCell() {
         addSubview(cellView)
         cellView.addSubview(titleStackView)
         cellView.addSubview(descriptionStackView)
-        cellView.addSubview(descriptionLabel)
+        cellView.addSubview(seperatorView)
+        cellView.addSubview(reviewView)
+        reviewView.addSubview(summaryReviewLabel)
         
         cellView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -196,13 +210,22 @@ final class ResentSearchCell: UICollectionViewCell {
             make.height.equalTo(24)
         }
         descriptionStackView.snp.makeConstraints { make in
-            make.top.equalTo(titleStackView.snp.bottom).offset(16)
+            make.top.equalTo(titleStackView.snp.bottom).offset(12)
             make.left.right.equalToSuperview().inset(12)
         }
-        descriptionLabel.snp.makeConstraints { make in
+        seperatorView.snp.makeConstraints { make in
             make.top.equalTo(descriptionStackView.snp.bottom).offset(12)
             make.left.right.equalToSuperview().inset(12)
+            make.height.equalTo(1)
+        }
+        reviewView.snp.makeConstraints { make in
+            make.top.equalTo(seperatorView.snp.bottom).offset(12)
+            make.left.right.equalToSuperview().inset(12)
             make.bottom.equalToSuperview().offset(-12)
+        }
+        summaryReviewLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.left.right.equalToSuperview()
         }
     }
     
