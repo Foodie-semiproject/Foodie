@@ -13,7 +13,8 @@
 - 현지 리뷰에 대한 번역을 제공하여 한국인들과 같은 경험 제공
 
 ## 데모
-<img src = "https://github.com/Foodie-semiproject/Foodie/blob/main/images/%EC%8B%9C%EC%97%B0%EC%98%81%EC%83%81.mp4">
+![demo](https://github.com/user-attachments/assets/b02ffe1d-e4f2-4a22-8c92-f19c2ed56fe4)
+
 
 ## 기술 스택
 **OCR:** Gemini API
